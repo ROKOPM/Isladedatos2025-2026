@@ -104,7 +104,24 @@ replace_env DAVIS_STATION_ID "$davis_station"
 
 docker volume create "$(grep -E '^POSTGRES_VOLUME=' .env | cut -d= -f2-)" >/dev/null
 
-docker compose pull
+if ! docker compose pull; then
+  cat >&2 <<'EOF'
+
+Error: no se pudieron descargar una o mas imagenes Docker.
+
+Si el error dice "unauthorized", las imagenes de GHCR son privadas o tu
+maquina no inicio sesion en ghcr.io.
+
+Soluciones:
+  1. Hacer publicos los paquetes GHCR del proyecto, o
+  2. Iniciar sesion antes de ejecutar setup.sh:
+
+       echo TU_TOKEN | docker login ghcr.io -u ROKOPM --password-stdin
+
+El token necesita permiso read:packages.
+EOF
+  exit 1
+fi
 docker compose up -d
 
 echo
