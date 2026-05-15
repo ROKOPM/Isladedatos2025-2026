@@ -1,153 +1,141 @@
 # ISLA de Datos Urbanos 2025-2026
 
-Plataforma de analitica urbana para captura, procesamiento semantico, monitoreo ambiental y visualizacion de patrones de comportamiento. El despliegue usa Docker Compose, imagenes propias publicadas en GitHub Container Registry (GHCR) y un instalador `setup.sh`.
+Repositorio principal y privado del proyecto **ISLA de Datos Urbanos 2025-2026**, una plataforma de análisis urbano basada en visión computacional, inteligencia artificial y analítica ambiental para el estudio de dinámicas sociales en espacios públicos.
 
-## Componentes
+Este repositorio contiene el núcleo completo del sistema:
 
-- `nginx`: sirve el frontend React y proxya `/api/` hacia Django.
-- `django`: API principal del dashboard.
-- `webservice`: capa de captura/procesamiento bronze.
-- `davis_poller`: ingesta de datos ambientales desde Davis WeatherLink.
-- `qwen_worker`: enriquecimiento semantico con Qwen via Ollama.
-- `habits_worker`: vectorizacion, clustering y estado de habitos.
-- `postgres`: PostgreSQL con pgvector.
-- `ollama`: runtime local para modelos LLaVA y Qwen.
+- backend y APIs
+- frontend y dashboard interactivo
+- pipelines ETL
+- workers semánticos
+- clustering conductual
+- integración con modelos multimodales
+- procesamiento ambiental
+- almacenamiento vectorial
+- infraestructura Docker
+- herramientas de minería y análisis de hábitos
 
-## Imagenes
+---
 
-Imagenes propias en GHCR:
+# Objetivo del Proyecto
 
-```text
-ghcr.io/rokopm/isla-webservice:latest
-ghcr.io/rokopm/isla-django:latest
-ghcr.io/rokopm/isla-qwen-worker:latest
-ghcr.io/rokopm/isla-habits-worker:latest
-ghcr.io/rokopm/isla-davis-poller:latest
-ghcr.io/rokopm/isla-nginx:latest
-```
+El proyecto busca construir una plataforma capaz de transformar observaciones urbanas no estructuradas en conocimiento analítico útil mediante:
 
-Imagenes externas:
+- visión computacional
+- modelos multimodales
+- embeddings semánticos
+- clustering conductual
+- análisis temporal
+- monitoreo ambiental
+- minería de datos urbanos
 
-```text
-pgvector/pgvector:pg16
-ollama/ollama:latest
-```
+La arquitectura permite detectar y analizar patrones sociales, hábitos colectivos y dinámicas de uso en espacios públicos a partir de imágenes, sensores y contexto ambiental.
 
-## Instalacion Rapida
+---
 
-Si las imagenes GHCR son publicas:
+# Líneas Principales de Investigación
+
+## Análisis Conductual Urbano
+
+Identificación automática de:
+
+- hábitos de consumo
+- comportamientos grupales
+- dinámicas sociales
+- patrones temporales
+- zonas de concentración
+- perfiles conductuales
+
+---
+
+## Procesamiento Multimodal
+
+Integración de:
+
+- imágenes
+- texto
+- embeddings
+- metadatos ambientales
+- contexto temporal
+
+mediante modelos como:
+
+- Qwen
+- LLaVA
+- Ollama
+- modelos vectoriales
+
+---
+
+## Analítica Ambiental
+
+Captura y correlación de:
+
+- temperatura
+- humedad
+- calidad ambiental
+- clima
+- temporalidad académica
+
+para estudiar relaciones entre entorno y comportamiento humano.
+
+---
+
+## Visualización y Exploración de Datos
+
+El sistema incorpora dashboards interactivos orientados a:
+
+- exploración semántica
+- visualización de clusters
+- análisis temporal
+- patrones de actividad
+- comportamiento social
+- reproducibilidad analítica
+
+---
+
+# Arquitectura General
+
+La plataforma se compone de múltiples servicios desacoplados:
+
+- frontend React servido por NGINX
+- backend Django
+- procesamiento ETL
+- workers semánticos
+- pipelines de embeddings
+- PostgreSQL + pgvector
+- inferencia local mediante Ollama
+- servicios de monitoreo ambiental
+
+Todo el sistema opera mediante contenedores Docker y procesamiento distribuido.
+
+---
+
+# Estado del Proyecto
+
+El sistema actualmente implementa:
+
+- pipelines automatizados de captura y procesamiento
+- clustering semántico de hábitos
+- embeddings vectoriales
+- dashboards analíticos
+- correlaciones ambientales
+- visualización temporal avanzada
+- workers multimodales
+- despliegue mediante Docker Compose
+- distribución mediante imágenes GHCR
+
+---
+
+# Instalación
+
+Este repositorio es privado y contiene el código fuente completo del sistema.
+
+Si deseas instalar y ejecutar la plataforma mediante imágenes Docker públicas, utiliza el instalador oficial:
+
+👉 [ISLA Installer Repository](https://github.com/ROKOPM/isla-installer?utm_source=chatgpt.com)
+
+Instalación rápida:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ROKOPM/Isladedatos2025-2026/main/setup.sh | bash
-```
-
-Si las imagenes GHCR son privadas, primero inicia sesion:
-
-```bash
-echo TU_TOKEN | docker login ghcr.io -u ROKOPM --password-stdin
-curl -fsSL https://raw.githubusercontent.com/ROKOPM/Isladedatos2025-2026/main/setup.sh | bash
-```
-
-El token para instalacion privada necesita `read:packages`.
-
-## Requisitos
-
-- Docker
-- Docker Compose v2
-- Git
-- GPU NVIDIA con runtime Docker NVIDIA para usar Ollama con GPU
-- Recomendado: 16 GB RAM minimo
-- Recomendado: 50 GB libres o mas
-
-## Configuracion
-
-El instalador crea un `.env` local desde `.env.template` y solicita:
-
-- `DAVIS_API_KEY`
-- `DAVIS_API_SECRET`
-- `DAVIS_STATION_ID`
-
-El archivo `.env` no debe subirse al repositorio.
-
-Variables frecuentes:
-
-```text
-GHCR_OWNER=rokopm
-IMAGE_TAG=latest
-HTTP_PORT=80
-WEBSERVICE_BIND=127.0.0.1
-NVIDIA_DEVICE_ID=0
-```
-
-## Uso
-
-Abrir:
-
-```text
-http://localhost
-```
-
-Comandos utiles:
-
-```bash
-docker compose ps
-docker compose logs -f nginx
-docker compose logs -f django
-docker compose logs -f habits_worker
-docker compose up -d
-docker compose down
-```
-
-## Publicar Imagenes
-
-Iniciar sesion en GHCR con un token que tenga `write:packages` y `read:packages`:
-
-```bash
-echo TU_TOKEN | docker login ghcr.io -u ROKOPM --password-stdin
-```
-
-Construir y publicar `latest`:
-
-```bash
-GHCR_OWNER=rokopm bash build-and-push.sh latest
-```
-
-Publicar una version:
-
-```bash
-GHCR_OWNER=rokopm bash build-and-push.sh v1.0.0
-```
-
-## Validacion
-
-```bash
-bash -n setup.sh
-bash -n build-and-push.sh
-docker compose config
-docker compose build nginx
-docker compose build django habits_worker qwen_worker davis_poller webservice
-curl -I http://localhost
-```
-
-Resultado esperado:
-
-```text
-HTTP/1.1 200 OK
-```
-
-## Seguridad y Datos
-
-No subir:
-
-- `.env`
-- tokens o API keys
-- Davis API keys reales
-- dumps SQL
-- backups
-- datos crudos
-- volumenes Docker
-- modelos Ollama
-- `node_modules`
-- builds `dist`
-
-Los `requirements.txt` si se versionan porque son necesarios para construir las imagenes Docker.
+curl -fsSL https://raw.githubusercontent.com/ROKOPM/isla-installer/main/setup.sh | bash
