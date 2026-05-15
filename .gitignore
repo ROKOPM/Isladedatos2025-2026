@@ -64,3 +64,6 @@ cluster_job.lock
 Thumbs.db
 .idea/
 .vscode/
+
+# Local working copy for the public installer repository.
+/isla-installer-public/
