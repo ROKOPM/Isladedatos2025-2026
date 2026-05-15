@@ -38,14 +38,14 @@ ollama/ollama:latest
 Si las imagenes GHCR son publicas:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/ROKOPM/Isladedatos2025-2026/main/setup.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ROKOPM/Isladedatos2025-2026/main/setup.sh | bash
 ```
 
 Si las imagenes GHCR son privadas, primero inicia sesion:
 
 ```bash
 echo TU_TOKEN | docker login ghcr.io -u ROKOPM --password-stdin
-curl -sSL https://raw.githubusercontent.com/ROKOPM/Isladedatos2025-2026/main/setup.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ROKOPM/Isladedatos2025-2026/main/setup.sh | bash
 ```
 
 El token para instalacion privada necesita `read:packages`.
