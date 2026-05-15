@@ -5,6 +5,7 @@
 # Documentation and notes are kept local for this distribution repo.
 *.md
 *.txt
+!/README.md
 !**/requirements.txt
 
 # Python
