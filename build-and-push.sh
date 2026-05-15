@@ -10,6 +10,8 @@ if [[ -z "$OWNER" ]]; then
   fi
 fi
 
+OWNER="$(printf '%s' "$OWNER" | tr '[:upper:]' '[:lower:]')"
+
 if [[ -z "$OWNER" || "$OWNER" == "TU_USUARIO" || "$OWNER" == "tu_usuario" ]]; then
   echo "Error: define GHCR_OWNER con tu usuario u organizacion de GitHub." >&2
   echo "Ejemplo: GHCR_OWNER=miusuario bash build-and-push.sh ${TAG}" >&2

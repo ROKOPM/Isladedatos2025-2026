@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-DEFAULT_REPO_URL="${ISLA_REPO_URL:-https://github.com/TU_USUARIO/isla-datos-urbanos-platform.git}"
-DEFAULT_INSTALL_DIR="${ISLA_INSTALL_DIR:-$HOME/isla-datos-urbanos-platform}"
+DEFAULT_REPO_URL="${ISLA_REPO_URL:-https://github.com/ROKOPM/Isladedatos2025-2026.git}"
+DEFAULT_INSTALL_DIR="${ISLA_INSTALL_DIR:-$HOME/Isladedatos2025-2026}"
 
 need_command() {
   if ! command -v "$1" >/dev/null 2>&1; then
@@ -84,7 +84,7 @@ if [[ ! -f .env ]]; then
   cp .env.template .env
 fi
 
-repo_owner="$(printf '%s' "$repo_url" | sed -E 's#^git@github.com:([^/]+)/.*#\1#; s#^https://github.com/([^/]+)/.*#\1#')"
+repo_owner="$(printf '%s' "$repo_url" | sed -E 's#^git@github.com:([^/]+)/.*#\1#; s#^https://github.com/([^/]+)/.*#\1#' | tr '[:upper:]' '[:lower:]')"
 replace_env GHCR_OWNER "$repo_owner"
 replace_env IMAGE_TAG "${IMAGE_TAG:-latest}"
 replace_env DJANGO_SECRET_KEY "$(random_secret)"
