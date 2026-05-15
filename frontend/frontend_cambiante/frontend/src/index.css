@@ -1,0 +1,334 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@300;400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── SCIENTIFIC OBSERVATORY DESIGN TOKENS ─────────────────────────── */
+:root {
+  /* Light mode — observatory diurno (papel científico) */
+  --background: 150 18% 97%;      /* blanco con ligero tinte teal */
+  --foreground: 156 30% 10%;      /* texto casi negro con tinte verde */
+  --card: 0 0% 100%;              /* blanco puro */
+  --card-secondary: 150 14% 94%;
+  --card-foreground: 156 30% 10%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 156 30% 10%;
+  --primary: 156 48% 30%;         /* verde científico más oscuro para contraste en claro */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 150 14% 92%;
+  --secondary-foreground: 156 30% 10%;
+  --muted: 150 14% 92%;
+  --muted-foreground: 156 18% 26%;
+  --accent: 156 48% 30%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 58% 45%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 150 14% 82%;
+  --input: 150 14% 82%;
+  --ring: 156 48% 30%;
+  --radius: 0.5rem;
+
+  /* Semantic Scientific Colors — light mode */
+  --tobacco: 0 50% 42%;           /* rojo tabaco, más oscuro para contraste */
+  --environment: 35 65% 42%;      /* ámbar, más oscuro */
+  --academic: 229 55% 52%;        /* azul académico */
+  --cluster: 264 55% 52%;         /* púrpura cluster */
+  --warning: 35 95% 48%;          /* naranja advertencia */
+  --critical: 0 80% 52%;          /* rojo crítico */
+  --success: 153 48% 38%;         /* verde éxito */
+  --neutral: 160 10% 45%;
+
+  /* Scientific chart palette */
+  --chart-1: 156 48% 30%;
+  --chart-2: 35 65% 42%;
+  --chart-3: 229 55% 52%;
+  --chart-4: 264 55% 52%;
+  --chart-5: 0 50% 42%;
+}
+
+.dark {
+  /* Dark mode — observatorio nocturno (modo principal científico) */
+  --background: 156 42% 5%;
+  --foreground: 135 15% 96%;
+  --card: 156 28% 8%;
+  --card-secondary: 154 28% 10%;
+  --card-foreground: 135 15% 96%;
+  --popover: 156 28% 8%;
+  --popover-foreground: 135 15% 96%;
+  --primary: 156 50% 37%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 154 28% 10%;
+  --secondary-foreground: 135 15% 96%;
+  --muted: 154 28% 10%;
+  --muted-foreground: 153 18% 80%;
+  --accent: 156 50% 37%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 55% 50%;
+  --destructive-foreground: 0 10% 97%;
+  --border: 154 15% 20%;
+  --input: 154 15% 20%;
+  --ring: 156 50% 37%;
+
+  --tobacco: 0 44% 49%;
+  --environment: 38 61% 56%;
+  --academic: 229 59% 63%;
+  --cluster: 264 61% 60%;
+  --warning: 35 100% 64%;
+  --critical: 0 100% 68%;
+  --success: 153 45% 49%;
+  --neutral: 160 8% 41%;
+
+  --chart-1: 156 50% 37%;
+  --chart-2: 38 61% 56%;
+  --chart-3: 229 59% 63%;
+  --chart-4: 264 61% 60%;
+  --chart-5: 0 44% 49%;
+}
+
+@layer base {
+  html {
+    font-size: 17px;
+  }
+  * {
+    box-sizing: border-box;
+    border-color: hsl(var(--border));
+  }
+  *:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: 'Geist', system-ui, sans-serif;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+/* ── SCIENTIFIC TYPOGRAPHY ────────────────────────────────────────── */
+.font-editorial {
+  font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+}
+
+.font-instrument {
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  letter-spacing: -0.01em;
+}
+
+/* ── SCIENTIFIC PANEL STYLING ─────────────────────────────────────── */
+.sci-panel {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+}
+
+.sci-panel-header {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid hsl(var(--border));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.sci-state-note {
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--secondary) / 0.45);
+  border-radius: var(--radius);
+  padding: 0.625rem 0.75rem;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.sci-divider {
+  height: 1px;
+  background: hsl(var(--border));
+  margin: 0.5rem 0;
+}
+
+/* ── GOVERNANCE BADGE VARIANTS ────────────────────────────────────── */
+.gov-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.24rem 0.55rem;
+  font-size: 0.6875rem;
+  font-family: 'Geist', system-ui, sans-serif;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  line-height: 1.4;
+}
+.gov-badge-ok    { background: hsl(155 40% 38% / 0.12); color: hsl(155 40% 38%); border: 1px solid hsl(155 40% 38% / 0.2); }
+.gov-badge-warn  { background: hsl(40 60% 50% / 0.12);  color: hsl(32 60% 42%);  border: 1px solid hsl(40 60% 50% / 0.2); }
+.gov-badge-block { background: hsl(0 60% 50% / 0.10);   color: hsl(0 55% 45%);   border: 1px solid hsl(0 60% 50% / 0.2); }
+
+.gov-badge-info  { background: hsl(var(--primary) / 0.10); color: hsl(var(--primary)); border: 1px solid hsl(var(--primary) / 0.22); }
+
+/* ── FIGURE CAPTION STYLING ───────────────────────────────────────── */
+.fig-caption {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 0.75rem;
+  font-style: italic;
+  color: hsl(var(--muted-foreground));
+  line-height: 1.5;
+  margin-top: 0.5rem;
+}
+
+.fig-number {
+  font-family: 'Geist Mono', monospace;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: hsl(var(--foreground));
+}
+
+/* ── LINEAGE RIBBON ───────────────────────────────────────────────── */
+.lineage-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.2rem 0.4rem;
+  font-size: 0.625rem;
+  font-family: 'Geist Mono', monospace;
+  background: hsl(var(--secondary));
+  border: 1px solid hsl(var(--border));
+  border-radius: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.lineage-arrow {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.6875rem;
+  margin: 0 0.125rem;
+}
+
+/* ── SCI-PANEL TRANSITIONS ────────────────────────────────────────── */
+.sci-panel {
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+/* ── SHIMMER SKELETON LOADING ─────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -250% 0 }
+  100% { background-position:  250% 0 }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--secondary)) 0%,
+    hsl(var(--border)) 45%,
+    hsl(var(--secondary)) 90%
+  );
+  background-size: 250% 100%;
+  animation: shimmer 1.7s ease-in-out infinite;
+  border-radius: var(--radius);
+}
+
+/* ── ENTRANCE ANIMATIONS ───────────────────────────────────────────── */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-enter {
+  animation: fadeSlideUp 0.38s cubic-bezier(0.22, 0.84, 0.38, 1) both;
+}
+.stagger-1 { animation-delay: 0.04s; }
+.stagger-2 { animation-delay: 0.09s; }
+.stagger-3 { animation-delay: 0.14s; }
+.stagger-4 { animation-delay: 0.20s; }
+.stagger-5 { animation-delay: 0.26s; }
+.stagger-6 { animation-delay: 0.33s; }
+.stagger-7 { animation-delay: 0.40s; }
+
+/* ── INSIGHT STRIP ─────────────────────────────────────────────────── */
+.insight-strip {
+  background: linear-gradient(
+    to right,
+    hsl(var(--primary) / 0.08) 0%,
+    hsl(var(--primary) / 0.02) 100%
+  );
+  border-left: 2px solid hsl(var(--primary) / 0.45);
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+/* ── ACTIVE FILTER CHIP ────────────────────────────────────────────── */
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.6875rem;
+  font-family: 'Geist Mono', monospace;
+  background: hsl(var(--primary) / 0.09);
+  color: hsl(var(--primary));
+  border: 1px solid hsl(var(--primary) / 0.2);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.14s ease, border-color 0.14s ease;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  min-height: 28px;
+  max-width: 100%;
+}
+.filter-chip:hover {
+  background: hsl(var(--primary) / 0.16);
+  border-color: hsl(var(--primary) / 0.35);
+}
+.filter-chip-remove {
+  font-size: 0.6875rem;
+  opacity: 0.5;
+  margin-left: 0.05rem;
+  line-height: 1;
+}
+.filter-chip:hover .filter-chip-remove { opacity: 0.85; }
+
+/* ── SCROLLBAR ────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: hsl(var(--secondary)); }
+::-webkit-scrollbar-thumb { background: hsl(var(--muted-foreground) / 0.3); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted-foreground) / 0.5); }
+
+/* ── CUSTOM SCROLLBAR (shared utility) ───────────────────────────── */
+.custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 4px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted-foreground) / 0.5); }
+
+/* ── GLASSMORPHISM ────────────────────────────────────────────────── */
+.glassmorphic {
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  background: hsl(var(--background) / 0.65);
+  border: 1px solid hsl(var(--border) / 0.55);
+  box-shadow: 0 8px 32px hsl(0 0% 0% / 0.12), 0 2px 8px hsl(0 0% 0% / 0.08);
+}
+
+/* ── BOUNCING LETTERS LOADER ──────────────────────────────────────── */
+@keyframes letter-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.animate-letter-bounce {
+  animation: letter-bounce 0.6s ease-in-out infinite;
+}
+
+/* ── DATA WARNING TOAST TIMER ─────────────────────────────────────── */
+@keyframes toastTimer {
+  from { transform: scaleX(1); }
+  to   { transform: scaleX(0); }
+}
+.toast-timer {
+  transform-origin: left;
+  animation: toastTimer var(--toast-duration, 9s) linear forwards;
+}

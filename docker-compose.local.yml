@@ -1,0 +1,81 @@
+# docker-compose para visualizar el dashboard localmente
+# Solo: postgres + django + nginx (SIN ollama, qwen, habitos, davis)
+#
+# Uso:
+#   1. Restaurar la base de datos (una sola vez):
+#      docker exec -i isla_postgres_local psql -U postgres postgres < db_dump_dashboard.sql
+#   2. Levantar:
+#      docker compose -f docker-compose.local.yml up --build -d
+#   3. Abrir: http://localhost:80
+
+services:
+
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: isla_postgres_local
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER:     postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB:       postgres
+    volumes:
+      - postgres_local_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - isla_local_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  django:
+    build: ./dashboard_django
+    container_name: isla_django_local
+    restart: unless-stopped
+    environment:
+      DB_HOST:    isla_postgres_local
+      DB_PORT:    "5432"
+      DB_NAME:    postgres
+      DB_USER:    postgres
+      DB_PASS:    postgres
+      ALERTA_UMBRAL_FUMADO:    20
+      ALERTA_UMBRAL_PM10:      54
+      CONFIANZA_FUMADO_UMBRAL: "0.60"
+      API_KEY:    ""
+      DJANGO_SECRET_KEY:    "clave-local-insegura-solo-para-dev"
+      DJANGO_DEBUG:         "True"
+      DJANGO_ALLOWED_HOSTS: "nginx,localhost,127.0.0.1"
+    networks:
+      - isla_local_net
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8000/api/health/"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    container_name: isla_nginx_local
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    networks:
+      - isla_local_net
+    depends_on:
+      django:
+        condition: service_healthy
+
+volumes:
+  postgres_local_data:
+
+networks:
+  isla_local_net:
+    driver: bridge
