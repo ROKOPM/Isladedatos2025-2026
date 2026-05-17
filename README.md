@@ -1,6 +1,6 @@
-# ISLA de Datos Urbanos 2025-2026
+# ISLA de Datos Urbanos 2025-2026 - Codigo Fuente
 
-Repositorio principal del proyecto **ISLA de Datos Urbanos 2025-2026**, una plataforma de análisis urbano basada en visión computacional, inteligencia artificial y analítica ambiental para el estudio de dinámicas sociales en espacios públicos.
+Repositorio principal de codigo fuente del proyecto **ISLA de Datos Urbanos 2025-2026**, una plataforma de analisis urbano basada en vision computacional, inteligencia artificial y analitica ambiental para el estudio de dinamicas sociales en espacios publicos.
 
 Este repositorio contiene el pipeline central completo:
 
@@ -14,11 +14,13 @@ Este repositorio contiene el pipeline central completo:
 - almacenamiento vectorial
 - infraestructura Docker
 - herramientas de minería y análisis de hábitos
+- codigo del nodo edge de captura en `isla_edge/`
 
-Si también necesitas el nodo de captura con cámara USB o RTSP, instala el edge desde:
+Este repo es para desarrollo, auditoria y explicacion tecnica del proyecto. Para instalar el sistema en una maquina final usa los instaladores publicos:
 
 ```text
-https://github.com/ROKOPM/isla-edge-installer
+Pipeline central: https://github.com/ROKOPM/isla-installer
+Nodo de captura: https://github.com/ROKOPM/isla-edge-installer
 ```
 
 ---
@@ -118,11 +120,26 @@ Todo el sistema opera mediante contenedores Docker y procesamiento distribuido.
 
 ---
 
-# Nodo de Captura Edge
+# Codigo del Nodo de Captura Edge
 
-Este repositorio instala el procesamiento central: base de datos, LLaVA/Qwen, workers, API y dashboard.
+El codigo del nodo de captura vive dentro de este repositorio en:
 
-Para capturar imágenes desde una cámara física se usa el repositorio complementario:
+```text
+isla_edge/
+```
+
+Incluye:
+
+- `isla_edge/edge/server.py`: servidor Flask/SocketIO de captura.
+- `isla_edge/edge/Dockerfile`: imagen Docker del nodo edge.
+- `isla_edge/edge/requirements.txt`: dependencias Python.
+- `isla_edge/edge/templates/index.html`: interfaz local del nodo.
+- `isla_edge/docker-compose.yml`: compose de referencia para desarrollo.
+- `isla_edge/.env.template`: plantilla sin secretos.
+
+No se incluyen llaves, modelos entrenados, `.env`, capturas ni casos dificiles.
+
+Para instalar el nodo edge en una maquina con camara fisica se usa el instalador complementario:
 
 ```text
 https://github.com/ROKOPM/isla-edge-installer
@@ -134,13 +151,13 @@ El nodo `isla-edge` puede correr en la misma PC que este pipeline o en otra PC c
 http://IP_DEL_SERVIDOR:8001/llava/
 ```
 
-Instalación rápida del edge:
+Instalacion rapida del edge:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/ROKOPM/isla-edge-installer/main/setup.sh | bash
 ```
 
-Usa este repositorio para el pipeline completo y `isla-edge-installer` para la captura física.
+Usa este repositorio para revisar o modificar el codigo. Usa `isla-installer` y `isla-edge-installer` para instalar.
 
 ---
 
@@ -160,16 +177,16 @@ El sistema actualmente implementa:
 
 ---
 
-# Instalación
+# Instaladores
 
-Instalación rápida del pipeline central:
+Pipeline central:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ROKOPM/Isladedatos2025-2026/main/setup.sh | bash
+https://github.com/ROKOPM/isla-installer
 ```
 
-Si usas el instalador público separado del pipeline central:
+Nodo de captura:
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/ROKOPM/isla-installer/main/setup.sh | bash
+```text
+https://github.com/ROKOPM/isla-edge-installer
 ```

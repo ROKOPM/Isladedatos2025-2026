@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛡️ Isla de Datos Urbanos — Edge Node</title>
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="header">
+            <div class="header-left">
+                <h1>🛡️ Isla de Datos Urbanos</h1>
+                <span class="subtitle">Nodo Edge · Privacidad · Cifrado · Transmisión</span>
+            </div>
+            <div class="server-info">
+                <div class="info-pill">
+                    <span>Clientes:</span>
+                    <strong id="clientCount">0</strong>
+                </div>
+                <div id="connectionStatus" class="status-pill status-disconnected">
+                    🔌 Desconectado
+                </div>
+            </div>
+        </div>
+
+        <!-- PIPELINE VISUAL -->
+        <div class="pipeline-bar">
+            <div class="pipe-step active">
+                <span class="pipe-icon">📹</span>
+                <span>Edge YOLO</span>
+            </div>
+            <div class="pipe-arrow">→</div>
+            <div class="pipe-step">
+                <span class="pipe-icon">🔒</span>
+                <span>Cifrado Disco</span>
+            </div>
+            <div class="pipe-arrow">→</div>
+            <div class="pipe-step">
+                <span class="pipe-icon" id="pipeQueueIcon">📤</span>
+                <span>Cola LLM <span id="pipeQueueCount" class="queue-badge">0</span></span>
+            </div>
+            <div class="pipe-arrow">→</div>
+            <div class="pipe-step">
+                <span class="pipe-icon">🏭</span>
+                <span>Datacenter</span>
+            </div>
+        </div>
+
+        <!-- CÁMARAS -->
+        <div class="main-layout">
+            {% for cam_id in cam_ids %}
+            <div class="camera-section" id="camera-section-{{cam_id}}">
+
+                <!-- HEADER DE CÁMARA -->
+                <div class="camera-header">
+                    <div class="cam-title">
+                        <h2>📹 {{ cam_id }}</h2>
+                        <div id="streamStatus_{{cam_id}}" class="status-tag paused">⏸️ Detenido</div>
+                    </div>
+                    <div class="cam-stats">
+                        <div class="stat-box">
+                            <label>Personas</label>
+                            <strong id="personCount_{{cam_id}}">—</strong>
+                        </div>
+                        <div class="stat-box">
+                            <label>Cola LLM</label>
+                            <strong id="queueSize_{{cam_id}}">0 / ?</strong>
+                        </div>
+                        <div class="stat-box privacy-badge">
+                            <label>Stream</label>
+                            <strong>🔐 Censurado</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="camera-content">
+
+                    <!-- FEED -->
+                    <div class="camera-feed">
+                        <div class="camera-container">
+                            <img id="serverCamera_{{cam_id}}"
+                                 src=""
+                                 alt="Stream censurado de cámara {{cam_id}}"
+                                 class="serverCamera"
+                                 style="display:none;">
+                            <div class="camera-placeholder" id="cameraPlaceholder_{{cam_id}}">
+                                <div class="placeholder-content">
+                                    <p>📷</p>
+                                    <p>Esperando imagen...</p>
+                                </div>
+                            </div>
+                            <!-- Badge de privacidad sobre el video -->
+                            <div class="privacy-overlay" id="privacyOverlay_{{cam_id}}" style="display:none;">
+                                🔐 YOLO Activo · Rostros Censurados
+                            </div>
+                        </div>
+
+                        <!-- CONTROLES -->
+                        <div class="controls-grid">
+                            <div class="controls">
+                                <strong>Stream:</strong>
+                                <div class="buttons">
+                                    <button class="startBtn btn btn-primary" data-cam="{{cam_id}}">▶️ Activar</button>
+                                    <button class="stopBtn  btn btn-danger"   data-cam="{{cam_id}}">⏹️ Parar</button>
+                                </div>
+                            </div>
+
+                            <div class="auto-capture-controls">
+                                <strong>Análisis automático</strong>
+                                <div class="buttons">
+                                    <button class="startAutoBtn btn btn-success" data-cam="{{cam_id}}">Iniciar</button>
+                                    <button class="stopAutoBtn  btn btn-danger"  data-cam="{{cam_id}}" disabled>Detener</button>
+                                    <div class="interval-control">
+                                        <input type="number" id="autoInterval_{{cam_id}}" min="3" max="3600" value="5">
+                                        <label for="autoInterval_{{cam_id}}">seg</label>
+                                        <button class="applyIntervalBtn btn btn-secondary btn-sm" data-cam="{{cam_id}}" title="Cambiar intervalo sin reiniciar">Aplicar</button>
+                                    </div>
+                                </div>
+                                <div class="queue-status" id="queueStatus_{{cam_id}}">
+                                    <div class="queue-bar-wrap">
+                                        <div class="queue-bar-fill" id="queueBar_{{cam_id}}" style="width:0%"></div>
+                                    </div>
+                                    <span id="queueLabel_{{cam_id}}">Cola vacía</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PANEL DE DATOS -->
+                    <div class="camera-data">
+
+                        <!-- Prompt -->
+                        <div class="prompt-section">
+                            <h3>Prompt de Análisis</h3>
+                            <textarea id="prompt_{{cam_id}}" rows="10">Eres un sensor visual en campus universitario (ESCOM IPN). Analiza SOLO lo que ves en la imagen. Responde ÚNICAMENTE con JSON válido, sin markdown, sin texto extra.
+
+ESQUEMA EXACTO:
+{"conteo_personas":0,"postura_dominante":"sentado|parado|caminando|otro","interaccion_social":"solo|en_pareja|grupo_pequeno|grupo_grande|sin_personas","actividad":"verbo_contexto","fumando":false,"confianza_fumando":0.0,"objetos_detectados":["mochila","celular"],"zona":"exterior_jardin|exterior_acceso|corredor_cubierto|interior_aula|cafeteria|otro","nivel_actividad":"estatico|bajo|moderado|alto","resumen_semantico":"2 oraciones describiendo quien hace que y patron de comportamiento."}
+
+FUMADO — busca evidencia visual en este orden:
+true/0.95 = humo visible saliendo de boca/nariz, O cigarro encendido en mano o boca
+true/0.80 = objeto cilíndrico delgado (cigarro/vaper) entre dedos o en labios
+true/0.65 = gesto repetido de llevar objeto delgado a la boca
+false/0.30 = postura ambigua, objeto no identificable
+false/0.00 = ningún indicio de cigarro, humo o gesto de fumado
+IMPORTANTE: Si ves un cigarro o vaper en la mano de alguien, fumando=true y ponlo en objetos_detectados.
+
+Sin personas: {"conteo_personas":0,"postura_dominante":"N/A","interaccion_social":"sin_personas","actividad":"escena_vacia","fumando":false,"confianza_fumando":0.0,"objetos_detectados":[],"zona":"exterior_acceso","nivel_actividad":"estatico","resumen_semantico":"Sin presencia humana visible."}</textarea>
+                            <button class="captureBtn btn btn-primary btn-full-width" data-cam="{{cam_id}}">
+                                ✨ Capturar y Analizar (Manual)
+                                <span class="spinner" style="display:none;"></span>
+                            </button>
+                        </div>
+
+                        <!-- Historial -->
+                        <div class="responses-section">
+                            <div class="section-header">
+                                <h3>📊 Respuestas del Datacenter</h3>
+                                <button class="clearHistoryBtn btn btn-secondary btn-sm" data-cam="{{cam_id}}">🗑️ Limpiar</button>
+                            </div>
+                            <div class="table-container">
+                                <table class="responsesTable" id="responsesTable_{{cam_id}}">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Hora</th>
+                                            <th>👤</th>
+                                            <th>Respuesta LLaVA / JSON</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div><!-- /container -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

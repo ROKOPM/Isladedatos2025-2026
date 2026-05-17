@@ -1,0 +1,30 @@
+# Do not bake local secrets, trained models or encrypted storage keys into GHCR images.
+keys/
+*.pt
+*.key
+*.pem
+*.crt
+
+# Runtime captures and local state.
+static/snapshots/
+photos/
+hard_cases/
+*.log
+*.pid
+
+# Python/cache/editor files.
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+*.swp
+*.tmp
+*.bak
+
+# Local env files.
+.env
+.env.*

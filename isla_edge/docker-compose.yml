@@ -1,0 +1,45 @@
+# =============================================================
+#  ISLA DE DATOS URBANOS — Edge Node
+#  Corre en la isla física (máquina con cámara)
+#  Solo requiere: cámara USB + internet hacia el servidor
+# =============================================================
+
+services:
+
+  edge:
+    image: ghcr.io/${GHCR_OWNER:-rokopm}/isla-edge:${IMAGE_TAG:-latest}
+    build: ./edge
+    container_name: isla_edge
+    restart: unless-stopped
+    environment:
+      # ── Apunta al servidor central ─────────────────────────
+      # Misma PC: http://127.0.0.1:8001/llava/
+      # Otra PC:  http://IP_DEL_SERVIDOR:8001/llava/
+      FASTAPI_URL:          ${FASTAPI_URL:-http://127.0.0.1:8001/llava/}
+      FLASK_SECRET_KEY:     ${FLASK_SECRET_KEY:-dev_secret_local_1234}
+      SAVE_PATH:            /mnt/memoria/photos
+      ENC_KEY_FILE:         /mnt/memoria/storage_encryption.key
+      CORS_ORIGINS:         ${CORS_ORIGINS:-*}
+      AUTO_CAPTURE_INTERVAL: ${AUTO_CAPTURE_INTERVAL:-20}
+      # [FIX-BUG03] Credenciales RTSP desde variables de entorno
+      RTSP_USER:            ${RTSP_USER:-admin}
+      RTSP_PASS:            ${RTSP_PASS:-admin}
+      RTSP_HOST:            ${RTSP_HOST:-10.3.56.5}
+      RTSP_PARAMS:          ${RTSP_PARAMS:-channel=2&subtype=0}
+      RTSP_ENABLED:         ${RTSP_ENABLED:-false}
+      DETECTOR_MODEL_PATH:  ${DETECTOR_MODEL_PATH:-/mnt/memoria/smoking_best.pt}
+      HARD_CASES_PATH:      /mnt/memoria/hard_cases
+      HARD_CASES_CONF_MIN:  "0.25"
+    # network_mode host: el contenedor usa directamente la red del host.
+    # Necesario para que RTSP (10.3.56.5) y Tailscale (100.x.x.x) sean
+    # alcanzables sin NAT adicional. Con host mode el puerto 5000 queda
+    # expuesto automaticamente — la seccion ports se ignora.
+    network_mode: host
+    volumes:
+      - ./photos:/mnt/memoria/photos
+      - ./hard_cases:/mnt/memoria/hard_cases
+      - ./edge/keys:/mnt/memoria
+    devices:
+      - ${USB_VIDEO_DEVICE:-/dev/video0}:${USB_VIDEO_DEVICE:-/dev/video0}
+    group_add:
+      - video
